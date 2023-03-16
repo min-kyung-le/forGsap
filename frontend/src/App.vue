@@ -1,14 +1,28 @@
 <template>
   <div>
-    <div class="info">스크롤을 내리면 책상이 보입니다.</div>
-    <div class="contents">
-      <img src="./assets/imgs/desk.jpg" class="initDesk bgDesk" alt="bgDesk" />
-      <img src="./assets/imgs/frame.png" class="addItem frame" alt="frame" />
-      <img src="./assets/imgs/soap.png" class="addItem soap" alt="soap" />
-      <img src="./assets/imgs/card.png" class="addItem card" alt="card" />
-      <img src="./assets/imgs/postit.png" class="addItem postit" alt="postit" />
-      <img src="./assets/imgs/wallet.png" class="addItem wallet" alt="wallet" />
-    </div>
+    <h1 class="top-comment">Scroll Down!</h1>
+
+    <section class="comparisonSection">
+      <div class="comparisonImage beforeImage">
+        <img src="./assets/imgs/desk.jpg" alt="desk" />
+      </div>
+      <div class="comparisonImage afterImage afterImage0">
+        <img src="./assets/imgs/frame.png" alt="frame" />
+      </div>
+      <div class="comparisonImage afterImage afterImage1">
+        <img src="./assets/imgs/soap.png" alt="soap" />
+      </div>
+      <div class="comparisonImage afterImage afterImage2">
+        <img src="./assets/imgs/card.png" alt="card" />
+      </div>
+      <div class="comparisonImage afterImage afterImage3">
+        <img src="./assets/imgs/postit.png" alt="postit" />
+      </div>
+      <div class="comparisonImage afterImage afterImage4">
+        <img src="./assets/imgs/wallet.png" alt="wallet" />
+      </div>
+    </section>
+    <h1 class="bottom-comment">What did you think?</h1>
   </div>
 </template>
 <script lang="ts">
@@ -17,91 +31,98 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
-gsap.defaults({ ease: "Power1.easeInOut", duration: 2 });
 
 export default defineComponent({
   name: "bgDesk",
   mounted() {
-    this.deskPin();
+    this.sectionSlide();
   },
   methods: {
-    deskPin() {
-      const tl = gsap.timeline();
-      tl.from(".frame", { yPrecent: -100, opacity: 1 });
+    textAnimation() {},
+    sectionSlide() {
+      gsap.utils.toArray(".comparisonSection").forEach((section) => {
+        let tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "center-=100 center",
+            end: () => "+=" + section.offsetWidth,
+            scrub: true,
+            pin: true,
+            anticipatePin: 1,
+          },
+          defaults: { ease: "none" },
+        });
 
-      ScrollTrigger.create({
-        animation: tl,
-        trigger: ".bgDesk",
-        start: "center center",
-        end: "+=4000",
-        markers: true,
-        pin: true,
-        toggleActions: "restart pause pause reverse",
+        for (let i = 0; i < 5; i++) {
+          tl.fromTo(
+            section.querySelector(`.afterImage${i}`),
+            { xPercent: 100, x: 0 },
+            { xPercent: 0 }
+          ).fromTo(
+            section.querySelector(`.afterImage${i} img`),
+            { xPercent: -100, x: 0 },
+            { xPercent: 0 },
+            "<"
+          );
+        }
       });
-
-      /* gsap.to(".bgDesk", {
-        scrollTrigger: {
-          trigger: ".bgDesk",
-          start: "center center",
-          end: "+=4000",
-          markers: true,
-          pin: true,
-          toggleActions: "restart pause pause reverse",
-        },
-        display: "block",
-        opacity: 1,
-      }); */
     },
   },
 });
 </script>
 
 <style scoped>
-.info {
-  width: 90vw;
+.top-comment {
+  text-align: center;
+  height: 100vh;
+  padding-top: 280px;
+}
+
+.bottom-comment {
+  text-align: center;
   height: 80vh;
-  padding: 250px 0 50px 0;
-  font-size: x-large;
+  padding-top: 300px;
 }
-.contents {
+
+body {
+  height: 300vh;
+  background-color: #111;
+  color: white;
+  overflow-x: hidden;
+}
+
+h1,
+h2 {
+  font-weight: 400;
+  max-width: none;
+}
+
+.comparisonSection {
+  padding-top: 150px;
+  margin-left: 500px;
   position: relative;
-  width: 480px;
-  height: 800px;
+  padding-bottom: 56.25%; /* to maintain aspect ratio (responsive!) */
 }
-.bgDesk {
-  opacity: 1;
-  width: 400px;
-  height: 600px;
-  margin: 0 auto 100px auto;
+.comparisonImage {
+  width: 30%;
+  height: 80%;
+}
+
+.comparisonImage img {
+  width: 100%;
+  height: 100%;
   position: absolute;
   top: 0;
-  left: 450px;
 }
-.addItem {
-  margin: 0 auto;
+.afterImage {
   position: absolute;
+  overflow: hidden;
   top: 0;
-  left: 450px;
-  opacity: 0;
+  transform: translate(100%, 0px);
 }
-.frame {
-  width: 400px;
-  height: 600px;
-}
-.postit {
-  width: 400px;
-  height: 600px;
-}
-.card {
-  width: 400px;
-  height: 600px;
-}
-.soap {
-  width: 400px;
-  height: 600px;
-}
-.wallet {
-  width: 400px;
-  height: 600px;
+
+.beforeImage img {
+  width: 30%;
+  height: 80%;
 }
 </style>

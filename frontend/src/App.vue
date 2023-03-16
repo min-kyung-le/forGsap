@@ -1,6 +1,11 @@
 <template>
   <div>
-    <h1 class="top-comment">Scroll Down!</h1>
+    <h1 class="top-comment">
+      Scroll Down!
+      <p>
+        <img class="icon-down" src="./assets/chevron-down.svg" width="30" />
+      </p>
+    </h1>
 
     <section class="comparisonSection">
       <div class="comparisonImage beforeImage">
@@ -22,7 +27,7 @@
         <img src="./assets/imgs/wallet.png" alt="wallet" />
       </div>
     </section>
-    <h1 class="bottom-comment">What did you think?</h1>
+    <h1 class="bottom-comment">What do you think?</h1>
   </div>
 </template>
 <script lang="ts">
@@ -31,14 +36,34 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
-
 export default defineComponent({
   name: "bgDesk",
   mounted() {
     this.sectionSlide();
+    this.textAnimation();
   },
   methods: {
-    textAnimation() {},
+    textAnimation() {
+      gsap.from(".icon-down", {
+        duration: 0.2,
+        y: 8,
+        repeat: 100,
+        yoyo: true,
+      });
+
+      gsap.from(".bottom-comment", {
+        scrollTrigger: {
+          trigger: ".bottom-comment",
+          toggleActions: "restart pause restart pause",
+        },
+        scale: 0.3,
+        stagger: 0.3,
+        ease: "elastic",
+        opacity: 0,
+        duration: 1.5,
+        force3D: true,
+      });
+    },
     sectionSlide() {
       gsap.utils.toArray(".comparisonSection").forEach((section) => {
         let tl = gsap.timeline({
@@ -78,9 +103,13 @@ export default defineComponent({
   padding-top: 280px;
 }
 
+.top-comment p {
+  margin: 7px 0 0 0;
+}
+
 .bottom-comment {
   text-align: center;
-  height: 80vh;
+  height: 400px;
   padding-top: 300px;
 }
 

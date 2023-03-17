@@ -45,6 +45,10 @@ export default defineComponent({
   methods: {
     textAnimation() {
       gsap.from(".icon-down", {
+        scrollTrigger: {
+          trigger: ".icon-down",
+          toggleActions: "restart pause restart pause",
+        },
         duration: 0.2,
         y: 8,
         repeat: 100,
@@ -73,7 +77,6 @@ export default defineComponent({
             end: () => "+=" + section.offsetWidth,
             scrub: true,
             pin: true,
-            anticipatePin: 1,
           },
           defaults: { ease: "none" },
         });
